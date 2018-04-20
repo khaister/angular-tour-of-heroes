@@ -1,0 +1,8 @@
+.heroes li {
+  display: block;
+}
+
+.heroes li .badge {
+  font-style: italic;
+  margin-right: 10px;
+}
