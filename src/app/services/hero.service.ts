@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { catchError, map, tap } from 'rxjs/operators';
 
 
 import { Hero } from '../shared/models/hero';
@@ -11,6 +12,9 @@ import { MessageService } from '../services/message.service';
 export class HeroService {
 
   private _heroesUrl = 'api/heroes';
+  httpOptions = {
+    headers: new HttpHeaders({'Content-Type': 'application/json'})
+  };
 
   constructor(private _httpClient: HttpClient, private _messageService: MessageService) { }
 
@@ -33,6 +37,16 @@ export class HeroService {
         catchError(this.handleError<Hero>(`getHero id ${id}`))
       );
   }
+
+  updateHero(hero: Hero): Observable<any> {
+    return this._httpClient
+      .put(this._heroesUrl, hero, this.httpOptions)
+      .pipe(
+        tap(_ => this.log(`update hero id ${hero.id}`)),
+        catchError(this.handleError<any>(`updateHero id ${hero.id}`))
+      );
+  }
+
   /**
    * Handles HTTP operation that failed
    * Lets the app continue
